@@ -5,8 +5,8 @@
 #include <WiFiClient.h>
 
 /* Configuración de la red. */
-#define SSID "Schrodinger" // "alumnosInfo"
-#define PASSWORD "mauricio1024" // "Informatica2019"
+#define SSID "Brazo_Robotico" // "alumnosInfo"
+#define PASSWORD "12345678" // "Informatica2019"
 #define MAX_POINTS 512
 
 /**
