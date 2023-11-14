@@ -2,14 +2,14 @@
 #include "base_motor.h"
 #include "servos.h"
 #include "object_detection.h"
-#include "esp_camera.h"
+#include "camera.h"
 
 void setup()
 {
     delay(3000);
     Serial.begin(115200);
     Serial.println();
-    
+
     WiFiSetup();
     ObjectDetectionSetup();
     BaseMotorSetup();
