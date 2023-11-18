@@ -136,7 +136,7 @@ void handleCamera() {
 
     fb = esp_camera_fb_get();
 
-    server.sendHeader("Conten-Disposition", "inline; filename=capture.jpg");
+    server.sendHeader("Content-Disposition", "inline; filename=capture.jpg");
     server.send_P(200, "image/jpeg", (const char *)fb->buf, fb->len);
 
     esp_camera_fb_return(fb);
