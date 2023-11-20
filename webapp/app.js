@@ -82,22 +82,18 @@ app.post("/move", (req, res) => {
     }
 })
 
-app.get('/fetch-and-serve-image', async (req, res) => {
-  try {
-    // Make a GET request to the external endpoint to get the image
-    const response = await axios.get('http://192.168.0.1/capture.jpg', { responseType: 'arraybuffer' });
+app.get('/capture.jpg', async (req, res) => {
+    try {
+        // Make a GET request to the external endpoint to get the image
+        const response = await axios.get('http://192.168.0.1/capture.jpg', {
+            responseType: 'stream'
+        });
 
-    // Check if the request was successful (status code 200)
-    if (response.status === 200) {
-      const imageBuffer = Buffer.from(response.data, 'binary');
+        res.set('Content-Type', 'image/jpeg');
+        response.data.pipe(res);
 
-      // Save the image to the specified file path
-      fs.writeFileSync('image.jpg', imageBuffer);
-    } else {
-      console.error('Error retrieving image. Status code:', response.status);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
     }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Internal Server Error');
-  }
 });

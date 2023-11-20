@@ -46,30 +46,6 @@
             const xhr_dim = new XMLHttpRequest()
             const count = document.getElementById("count")
 
-            
-            function updateBackground() {
-              getImageFromESP32Cam();
-              const canvas = document.getElementById('canvas');
-              const ctx = canvas.getContext('2d');
-
-              // Create an Image object
-              const backgroundImage = new Image();
-
-              // Set the source of the image (replace 'image.jpg' with your image file)
-              backgroundImage.src = 'image.jpg';
-
-              // Wait for the image to load before drawing it on the canvas
-                // Draw the image on the canvas as the background ---- NO FUNCIONA
-              ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            }
-
-            setInterval(updateBackground, 500);
-
-            function getImageFromESP32Cam() {
-              xhr.open("GET", "/fetch-and-serve-image", true)
-              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-              xhr.send('')
-            }
 
             const move = (q, d) => {
                 console.log("move", q, d)
@@ -117,12 +93,23 @@
                 }
             }
 
+            function updateBackground() {
+                const canvas = document.getElementById("canvas");
+                const imageUrl = 'capture.jpg';
+                const uniqueId = new Date().getTime();
+                const url = `${imageUrl}?=${uniqueId}`;
+
+                canvas.style.backgroundImage = `url(${url})`;                
+            }
+
             const base = 13.4
             const altura = 10.00
             const minRadius = 3.3
             const maxRadius = 14.92
             UserCanvas.init()
 
+            setInterval(updateBackground, 1000);
+            
             sendBtn.onclick = () => {
                 xhr.open("POST", "/draw", true)
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
