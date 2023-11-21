@@ -4,6 +4,12 @@
 #include "wifi_station.h"
 #include "robot.h"
 #include "servos.h"
+#include "object_detection.h"
+#include <unordered_map>
+#include <vector>
+#include <fstream>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 IPAddress local_ip(192,168,0,1);
 IPAddress gateway(192,168,0,1);
@@ -72,6 +78,23 @@ void loadPoints(String str) {
     }
 }
 
+
+void handleObjects() {
+  //server.send(200, "text/plain", CaptureImage());
+  using json = nlohmann::json;
+  std::vector<std::unordered_map<std::string, std::string>> detectedObjects = CaptureImage();
+
+  // Convert the array of hashes to a JSON array
+  json jsonArray;
+  for (const auto& hash : detectedObjects) {
+      jsonArray.push_back(hash);
+  }
+
+  // Convert the JSON array to a string
+  std::string jsonString = jsonArray.dump(2); // Pretty-printed with 2 spaces of indentation
+  server.send(200, "text/json", jsonString);
+}
+
 // Espera recibir 2 parámetros
 // arg0: cantidad de puntos, arg1: cadena que representa la parametrización de los puntos
 void handleDraw() {
@@ -109,6 +132,7 @@ void WiFiSetup() {
     server.on("/",     handleRoot);
     server.on("/dim",  handleDimensions);
     server.on("/draw", handleDraw);
+    server.on("/detect-objects", handleObjects);
     server.on("/connect", []() {
         server.send(200, "text/plain", "OK");
     });
