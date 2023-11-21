@@ -99,7 +99,11 @@
                 const uniqueId = new Date().getTime();
                 const url = `${imageUrl}?=${uniqueId}`;
 
-                canvas.style.backgroundImage = `url(${url})`;                
+                const image = new Image();
+                image.src = url;
+                image.onload = function () {
+                    canvas.style.backgroundImage = `url(${url})`;
+                };
             }
 
             const base = 13.4
