@@ -11,6 +11,7 @@ void setup()
     Serial.println();
 
     WiFiSetup();
+    CameraInit();
     ObjectDetectionSetup();
     BaseMotorSetup();
     ServosSetup();

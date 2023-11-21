@@ -22,10 +22,10 @@ void CameraInit() {
     config.pin_pwdn = PWDN_GPIO_NUM;
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
-    config.frame_size = FRAMESIZE_96X96;
+    config.frame_size = FRAMESIZE_QVGA;
     config.pixel_format = PIXFORMAT_JPEG; // for streaming
     //config.pixel_format = PIXFORMAT_RGB565; // for face detection/recognition
-    config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
+    config.grab_mode = CAMERA_GRAB_LATEST;
     config.fb_location = CAMERA_FB_IN_PSRAM;
     config.jpeg_quality = 12;
     config.fb_count = 1;
@@ -36,25 +36,7 @@ void CameraInit() {
     //pinMode(LED_GPIO_NUM, OUTPUT);
     //digitalWrite(LED_GPIO_NUM, HIGH);
 
-    esp_camera_init(&config);
-}
-
-uint8_t CameraCapture(uint8_t * jpg_buf, size_t * jpg_buf_len) {
-    camera_fb_t * fb;
-
-    Serial.println("Tomando foto");
-
-    fb = esp_camera_fb_get();
-
-    if(!fb) {
-        Serial.println("Error al tomar foto");
-        return 1;
+    if (esp_camera_init(&config) != ESP_OK) {
+        Serial.println("Camera Init failed");
     }
-
-    jpg_buf = fb->buf;
-    *jpg_buf_len = fb->len;
-
-    esp_camera_fb_return(fb);
-
-    return 0;
 }

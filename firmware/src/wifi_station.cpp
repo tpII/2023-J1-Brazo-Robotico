@@ -132,12 +132,15 @@ void handleDraw() {
 void handleCamera() {
     camera_fb_t * fb = NULL;
 
-    Serial.println("Tomando foto");
-
     fb = esp_camera_fb_get();
 
-    server.sendHeader("Content-Disposition", "inline; filename=capture.jpg");
-    server.send_P(200, "image/jpeg", (const char *)fb->buf, fb->len);
+    if (!fb) {
+        Serial.println("Error al capturar imagen");
+        server.send(500);
+    } else {
+        server.sendHeader("Content-Disposition", "inline; filename=capture.jpg");
+        server.send_P(200, "image/jpeg", (const char *)fb->buf, fb->len);
+    }
 
     esp_camera_fb_return(fb);
 }

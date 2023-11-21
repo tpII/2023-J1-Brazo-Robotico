@@ -25,6 +25,5 @@
 #define LED_GPIO_NUM       4
 
 void CameraInit();
-uint8_t CameraCapture(uint8_t*, size_t*);
 
 #endif
