@@ -5,6 +5,10 @@
 #include "robot.h"
 #include "servos.h"
 
+IPAddress local_ip(192,168,0,1);
+IPAddress gateway(192,168,0,1);
+IPAddress subnet(255,255,255,0);
+
 WebServer server(80);
 
 int pointsLength = 0;
@@ -94,21 +98,12 @@ void handleDraw() {
 void WiFiSetup() {
     Serial.print("Configurando Access Point...");
 
-    // Conectar a la red WiFi
-    WiFi.begin(SSID, PASSWORD);
-    while (WiFi.status() != WL_CONNECTED) { 
-        delay(100); Serial.print("_");
-        delay(100); Serial.print(".");
-        delay(100); Serial.print("~");
-        delay(100); Serial.print(".");
-        delay(100); Serial.print("_");
-    }
+    WiFi.mode(WIFI_AP);
+    WiFi.softAPConfig(local_ip, gateway, subnet);
+    WiFi.softAP(SSID, PASSWORD);
 
-    // Éxito
     Serial.println("");
     Serial.println("WiFi conectado :D");
-    Serial.println("IP Address: ");
-    Serial.println(WiFi.localIP());
 
     // Manejadores de HTTP requests
     server.on("/",     handleRoot);
