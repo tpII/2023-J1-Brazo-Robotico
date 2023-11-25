@@ -1,22 +1,23 @@
 #include "wifi_station.h"
 #include "base_motor.h"
 #include "servos.h"
+#include "object_detection.h"
+#include "esp_camera.h"
 
-void setup() {
+void setup()
+{
     delay(3000);
-
-    Serial.begin(9600);
-
+    Serial.begin(115200);
     Serial.println();
-
+    
     WiFiSetup();
+    ObjectDetectionSetup();
     BaseMotorSetup();
     ServosSetup();
-
-    BaseMotorHome();
+    BaseMotorHome();    
 }
 
-void loop() {
-    Serial.println( "Estoy en el loop" );
+void loop()
+{
     WiFiUpdate();
-} 
+}

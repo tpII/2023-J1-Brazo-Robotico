@@ -4,6 +4,11 @@
 #include "wifi_station.h"
 #include "robot.h"
 #include "servos.h"
+#include "object_detection.h"
+#include <unordered_map>
+#include <vector>
+#include <fstream>
+#include "ArduinoJson-v6.21.3.h"
 
 IPAddress local_ip(192,168,0,1);
 IPAddress gateway(192,168,0,1);
@@ -72,6 +77,34 @@ void loadPoints(String str) {
     }
 }
 
+
+void handleObjects() {
+  std::vector<std::unordered_map<std::string, std::string>> data = CaptureImage();
+  // Calculate the capacity of the JSON document
+  size_t capacity = JSON_ARRAY_SIZE(data.size()) + data.size() * JSON_OBJECT_SIZE(data[0].size());
+
+  // Create a DynamicJsonDocument using the calculated capacity
+  DynamicJsonDocument doc(capacity);
+
+  // Create a JsonArray to hold the array of objects
+  JsonArray array = doc.to<JsonArray>();
+
+  // Iterate over the vector of unordered_maps and add each element to the JsonArray
+  for (const auto& element : data) {
+    JsonObject obj = array.createNestedObject();
+    for (const auto& kv : element) {
+      obj[kv.first.c_str()] = kv.second.c_str();
+    }
+  }
+
+  // Serialize the JSON document to a string
+  String jsonString;
+  serializeJson(doc, jsonString);
+  Serial.println(jsonString);
+  // Send as response
+  server.send(200, "text/json", jsonString);
+}
+
 // Espera recibir 2 parámetros
 // arg0: cantidad de puntos, arg1: cadena que representa la parametrización de los puntos
 void handleDraw() {
@@ -109,6 +142,7 @@ void WiFiSetup() {
     server.on("/",     handleRoot);
     server.on("/dim",  handleDimensions);
     server.on("/draw", handleDraw);
+    server.on("/detect-objects", handleObjects);
     server.on("/connect", []() {
         server.send(200, "text/plain", "OK");
     });
