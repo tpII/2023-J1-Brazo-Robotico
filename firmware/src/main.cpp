@@ -1,7 +1,6 @@
 #include "wifi_station.h"
 #include "base_motor.h"
 #include "servos.h"
-#include "object_detection.h"
 #include "camera.h"
 
 void setup()
@@ -12,7 +11,6 @@ void setup()
 
     WiFiSetup();
     CameraInit();
-    ObjectDetectionSetup();
     BaseMotorSetup();
     ServosSetup();
     BaseMotorHome();    
