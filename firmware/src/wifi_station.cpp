@@ -9,6 +9,7 @@
 #include <vector>
 #include <fstream>
 #include "ArduinoJson-v6.21.3.h"
+#include "esp_camera.h"
 
 IPAddress local_ip(192,168,0,1);
 IPAddress gateway(192,168,0,1);
@@ -128,6 +129,22 @@ void handleDraw() {
     server.send(200, "text/plain", "Draw: [" + String(pointsLength) + "]:" + pointsStr);
 }
 
+void handleCamera() {
+    camera_fb_t * fb = NULL;
+
+    fb = esp_camera_fb_get();
+
+    if (!fb) {
+        Serial.println("Error al capturar imagen");
+        server.send(500);
+    } else {
+        server.sendHeader("Content-Disposition", "inline; filename=capture.jpg");
+        server.send_P(200, "image/jpeg", (const char *)fb->buf, fb->len);
+    }
+
+    esp_camera_fb_return(fb);
+}
+
 void WiFiSetup() {
     Serial.print("Configurando Access Point...");
 
@@ -143,6 +160,7 @@ void WiFiSetup() {
     server.on("/dim",  handleDimensions);
     server.on("/draw", handleDraw);
     server.on("/detect-objects", handleObjects);
+    server.on("/capture.jpg", handleCamera);
     server.on("/connect", []() {
         server.send(200, "text/plain", "OK");
     });
@@ -180,5 +198,4 @@ void WiFiSetup() {
 
 void WiFiUpdate() {
     server.handleClient();
-     Serial.println ( "Estoy actualizando el wifi" );
 }

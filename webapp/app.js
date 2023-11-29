@@ -80,3 +80,19 @@ app.post("/move", (req, res) => {
         res.end("Falta IP")
     }
 })
+
+app.get('/capture.jpg', async (req, res) => {
+    try {
+        // Make a GET request to the external endpoint to get the image
+        const response = await axios.get('http://192.168.0.1/capture.jpg', {
+            responseType: 'stream'
+        });
+
+        res.set('Content-Type', 'image/jpeg');
+        response.data.pipe(res);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
