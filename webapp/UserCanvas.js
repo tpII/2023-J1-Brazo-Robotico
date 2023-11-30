@@ -10,6 +10,7 @@ const UserCanvas = {
     down: false, // Si el usuario está dibujando
     relation: .3, // Relación entre un punto real en cm y un píxel de este canvas
     mouse: {x: 0, y: 0},
+    selectedObject: {},
 
     setDimensions(width, height) {
         this.relation = width / this.w
@@ -42,13 +43,13 @@ const UserCanvas = {
         this.canvas.style.width = this.w + "px"
         this.canvas.style.height = this.h + "px"
 
-        this.canvas.addEventListener("mousedown", e => this.mousedown(e))
-        this.canvas.addEventListener("mouseup",   e => this.mouseup(e))
-        this.canvas.addEventListener("mousemove", e => this.mousemove(e))
+        //this.canvas.addEventListener("mousedown", e => this.mousedown(e))
+        //this.canvas.addEventListener("mouseup",   e => this.mouseup(e))
+        //this.canvas.addEventListener("mousemove", e => this.mousemove(e))
 
-        this.canvas.addEventListener("touchstart", e => this.mousedown(e.touches[0]))
-        this.canvas.addEventListener("touchmove",  e => {this.mousemove(e.touches[0]); e.preventDefault()})
-        this.canvas.addEventListener("touchend",   e => this.mouseup(e.changedTouches[0]))
+        //this.canvas.addEventListener("touchstart", e => this.mousedown(e.touches[0]))
+        //this.canvas.addEventListener("touchmove",  e => {this.mousemove(e.touches[0]); e.preventDefault()})
+        //this.canvas.addEventListener("touchend",   e => this.mouseup(e.changedTouches[0]))
 
         this.canvas.parentNode.addEventListener("fullscreenchange", e => { if(!document.fullscreenElement) this.nofullscreen()})
     },
@@ -68,6 +69,7 @@ const UserCanvas = {
     // Inicia un nuevo segmento
     mousedown(e) {
         this.lastPoint = this.mouseToPoint(e)
+        console.log(this.lastPoint);
         this.points.push(this.lastPoint, "DOWN")
         this.down = true
         this.draw()
@@ -95,9 +97,8 @@ const UserCanvas = {
 
     // Dibuja los segmentos en el canvas, cada uno con un color distinto
     draw() {
-        count.innerText = this.points.filter(x => x !== "DOWN" && x !== "UP").length
         this.ctx.clearRect(0, 0, this.w, this.h);
-
+        this.drawPointObjects();
         this.ctx.fillStyle = "#eee";
         const point = this.down ? this.lastPoint : this.mouse
         this.ctx.beginPath()
@@ -145,6 +146,7 @@ const UserCanvas = {
     // Transforma la serie de puntos en una cadena de texto
     // Esta cadena es la que se debe transmitir al MCU por medio de un HTTP Request
     toString() {
+        /*
         let t = ""
         for (const p of this.points) {
             if (p === "UP" || p === "DOWN")
@@ -154,7 +156,12 @@ const UserCanvas = {
                 t += real.x.toFixed(4) + "," + real.y.toFixed(4) + ","
             }
         }
-        return t
+        */
+        const obj = this.pointToReal(this.selectedObject);
+
+        let t = obj.x.toFixed(4) + "," + obj.y.toFixed(4) + ",DOWN,UP,";
+
+        return t;
     },
 
     clear() {
@@ -177,4 +184,50 @@ const UserCanvas = {
         this.w = Math.min(500, window.innerWidth - 40)
         this.setDimensions(this.width, this.height)
     },
+
+    drawPointObjects(){
+
+        //limpia el canvas
+        this.ctx.clearRect(0, 0, this.w, this.h);
+
+        // Dibuja el punto en el canvas
+        this.ctx.fillStyle = "#D22B2B";
+        this.ctx.beginPath();
+        this.ctx.arc(this.selectedObject.x, this.selectedObject.y, 8, 0, 2 * Math.PI, false);
+        this.ctx.fill();
+
+    },
+
+    selectObject(x, y) {
+        // Ajusta las coordenadas del objeto según la relación del canvas
+        const adjustedX = (x/96)*this.w;
+        const adjustedY = (y/96)*this.h;
+
+        this.selectedObject.x = adjustedX;
+        this.selectedObject.y = adjustedY;
+
+        this.draw();
+    },
+
+    unselectObject() {
+        this.selectedObject = {};
+
+        this.draw();
+    },
+
+    isObjectSelected() {
+        return Object.keys(this.selectedObject).length !== 0;
+    },
+
+    updateBackground() {
+      const imageUrl = 'capture.jpg';
+      const uniqueId = new Date().getTime();
+      const url = `${imageUrl}?=${uniqueId}`;
+
+      const image = new Image();
+      image.src = url;
+      image.onload = function () {
+        this.canvas.style.backgroundImage = `url(${url})`;
+      }
+  },
 }

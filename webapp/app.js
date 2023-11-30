@@ -3,7 +3,7 @@ const bodyParser = require("body-parser")
 const app = express()
 const axios = require("axios")
 
-let robotIp = null
+let robotIp = '192.168.0.1'
 
 // Configuramos express para usar a body-parser como middleware
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -35,6 +35,21 @@ app.post("/connect", (req, res) => {
     } else {
         res.end("Falta IP")
     }
+})
+
+app.post("/detect-objects", (req, res) => {
+  axios({
+      method: "get",
+      url: `http://${robotIp}/detect-objects`,
+      timeout: 5000
+  })
+    .then(r => {
+      if (r.status === 200)
+          console.log(r.data);
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(r.data));
+  })
+  .catch(error => res.end(error.code))
 })
 
 app.post("/dim", (req, res) => {
