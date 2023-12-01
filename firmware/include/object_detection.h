@@ -10,6 +10,6 @@
  *   x:    'PosX',
  *   y:    'PosY' } 
  */
-std::vector<std::unordered_map<std::string, std::string>> CaptureImage();
-void ObjectDetectionSetup();
+std::vector<std::unordered_map<std::string, std::string>> GetDetectedObjects();
+void DetectObjects(uint8_t *fb_buf, size_t fb_len);
 #endif
