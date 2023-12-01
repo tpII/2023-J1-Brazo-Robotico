@@ -16,6 +16,7 @@ const move = (q, d) => {
 
 const refresh = () => {
   DetectedObjects.deleteButtons(); // Elimino los botones que se crearon antes
+  UserCanvas.updateBackground();
 
   xhr.open('POST', '/detect-objects', true)
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -32,7 +33,6 @@ const refresh = () => {
   };
   refreshBtn.disabled = false             
 }
-
 my_button.onclick = () => {
     xhr.open("POST", "/connect", true)
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")

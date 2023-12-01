@@ -220,6 +220,7 @@ const UserCanvas = {
     },
 
     updateBackground() {
+      const canvas = document.getElementById('canvas');
       const imageUrl = 'capture.jpg';
       const uniqueId = new Date().getTime();
       const url = `${imageUrl}?=${uniqueId}`;
@@ -227,7 +228,7 @@ const UserCanvas = {
       const image = new Image();
       image.src = url;
       image.onload = function () {
-        this.canvas.style.backgroundImage = `url(${url})`;
+        canvas.style.backgroundImage = `url(${url})`;
       }
   },
 }
