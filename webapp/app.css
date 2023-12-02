@@ -8,7 +8,7 @@ body {
 }
 
 canvas {
-    box-shadow: 1px 2px 20px 0px #0f3550;
+    box-shadow: 1px 2px 20px 0px #0f3550; 
     transition: background-image 0.5s ease-in-out;
     background-size: cover;
     background-repeat: no-repeat;
@@ -52,7 +52,6 @@ button:disabled {
     cursor: auto;
 }
 
-
 .slidecontainer {
     padding:10px;
 }
@@ -85,4 +84,20 @@ button:disabled {
     height: 25px;
     background: #04AA6D;
     cursor: pointer;
+}
+
+.row {
+    display: flex;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-container button {
+    margin-bottom: 5px;
 }

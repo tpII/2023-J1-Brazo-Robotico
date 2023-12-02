@@ -4,17 +4,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="app.css">
-        <script src="UserCanvas.js"></script>
         <title>Brazo Robótico</title>
     </head>
     <body>
-        <input id="ip" placeholder="IP de Robot">
+        <h1> Brazo Robótico 🦾</h1>
         <button id="my_button">Conectar</button><br>
         <br>
-        <div class="slidecontainer">
-            <input type="range" min="1" max="50" value="10" class="slider" id="dimRange">
-            <span id="dim" style="font-family: monospace;">10</span>
-        </div>
         <div style="display: none;">
             <button onclick="move(2,-1)">-</button>Q2<button onclick="move(2,1)">+</button>
             <button onclick="move(3,-1)">-</button>Q3<button onclick="move(3,1)">+</button>
@@ -22,112 +17,25 @@
             <button onclick="move(5,-1)">-</button>Q5<button onclick="move(5,1)">+</button>
         </div>
         <button style="display:none" onclick="UserCanvas.fullscreen()">Fullscreen</button>
-        <div id="canvas_body">
-            <canvas id="canvas"></canvas>
+        <div class="row">
+            <div style="flex:1; padding: 10px" class="column"></div>
+            <div id="canvas_body" style="flex:2; padding: 10px;" class="column">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div id="buttonContainer" style="flex:1; padding: 10px" class="button-container">
+            </div>
         </div>
         <br>
         <br>
-        <button id="sendBtn">Dibujar ✏️</button>
-        <button onclick="UserCanvas.clear()">Borrar Todo❌</button>
-        <button onclick="UserCanvas.eraseLast()">Borrar Ultimo❌</button>
-        <br>
-        <span style="font-size:14px">Puntos cargados: </span><span id="count">0</span>
+        <button onclick="refresh()" id="refreshBtn">Refrescar</button>
+        <button id="sendBtn">Enviar</button>
         <br>
         <br>
         <span id="msg" style="font-size:20px"></span>
-        <div style="position:absolute; bottom: 0; right: 0"><i>by <b>Julián Delekta</b></i></div>
+        <div style="position:absolute; bottom: 0; right: 0"><i> <b></b></i></div>
 
-        <script>
-            const my_button = document.getElementById("my_button")
-            const input_ip  = document.getElementById("ip")
-            const sendBtn   = document.getElementById("sendBtn")
-            const msg       = document.getElementById("msg")
-            const xhr = new XMLHttpRequest()
-            const xhr_dim = new XMLHttpRequest()
-            const count = document.getElementById("count")
-
-
-            const move = (q, d) => {
-                console.log("move", q, d)
-                xhr.open("POST", "/move", true)
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-                xhr.send(`q=${q}&d=${d < 0 ? "n" : "p"}`)
-            }
-
-            my_button.onclick = () => {
-                xhr.open("POST", "/connect", true)
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-                xhr.send("ip=" + input_ip.value)
-            }
-
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    sendBtn.disabled = false
-
-                    if (xhr.status === 200) {
-                        if (xhr.response === "connected") {
-                            requestDimensions()
-
-                            alert("Conectado")
-                        } else if (xhr.response === "end_draw") {
-                            msg.innerText = "Finalizó 😁"
-                        } else {
-                            console.log(xhr.response)
-                        }
-                    }
-                }
-            }
-
-            function requestDimensions() {
-                xhr_dim.open("POST", "/dim", true)
-                xhr_dim.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-                xhr_dim.send("")
-                
-                xhr_dim.onreadystatechange = () => {
-                    if (xhr_dim.readyState === XMLHttpRequest.DONE) {
-                        if (xhr_dim.status === 200) {
-                            const [width, height] = xhr_dim.response.split("|")
-                            UserCanvas.setDimensions(parseFloat(width), parseFloat(height))
-                        }
-                    }
-                }
-            }
-
-            function updateBackground() {
-                const canvas = document.getElementById("canvas");
-                const imageUrl = 'capture.jpg';
-                const uniqueId = new Date().getTime();
-                const url = `${imageUrl}?=${uniqueId}`;
-
-                const image = new Image();
-                image.src = url;
-                image.onload = function () {
-                    canvas.style.backgroundImage = `url(${url})`;
-                };
-            }
-
-            const base = 13.4
-            const altura = 10.00
-            const minRadius = 3.3
-            const maxRadius = 14.92
-            UserCanvas.init()
-
-            setInterval(updateBackground, 1000);
-            
-            sendBtn.onclick = () => {
-                xhr.open("POST", "/draw", true)
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-                xhr.send("q=" + UserCanvas.points.length + "&ps=" + UserCanvas.toString())
-
-                msg.innerText = "Dibujando... ✏️"
-                sendBtn.disabled = true
-            }
-
-            document.getElementById("dimRange").addEventListener("input", e => {
-                document.getElementById("dim").innerText = (""+e.target.value).padStart(2, "0")
-                UserCanvas.DIM = e.target.value
-            }, true)
-
-        </script>
+        <script src="UserCanvas.js"></script>
+        <script src="DetectedObjects.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
