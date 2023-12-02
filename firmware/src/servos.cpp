@@ -141,5 +141,5 @@ void ServosMove(int servo, int d) {
              : servo == 4 ? &servoQ4
                           : &servoQ5;
     s->writeMicroseconds(s->readMicroseconds() + d);
-    Serial.println("S" + String(servo) + ":" + String(s->readMicroseconds()));
+    //Serial.println("S" + String(servo) + ":" + String(s->readMicroseconds()));
 }

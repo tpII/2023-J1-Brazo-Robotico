@@ -24,7 +24,8 @@ const char CW[]  = {0x01, 0x09, 0x08, 0x0c, 0x04, 0x06, 0x02, 0x03};
 
 // --===================== PRIVATE =====================--
 String input;
-int target = 505;
+int target = 0;
+int actual = 0;
 int direction = STOP;
 
 void moveCW(uint timedelay) {
@@ -34,9 +35,11 @@ void moveCW(uint timedelay) {
         digitalWrite(IN3, isSet(CW[i], 4));
         digitalWrite(IN4, isSet(CW[i], 8));
         
+        actual -= 1;
+
         delay(timedelay);
 
-        if (analogRead(POTE) <= target)
+        if (actual <= target)
             return;
     }
 }
@@ -48,38 +51,13 @@ void moveCCW(uint timedelay) {
         digitalWrite(IN3, isSet(CCW[i], 4));
         digitalWrite(IN4, isSet(CCW[i], 8));
 
+        actual += 1;
+
         delay(timedelay);
 
-        if (analogRead(POTE) >= target)
+        if (actual >= target)
             return;
     }
-}
-
-void moveTo(uint pos) {
-    if (pos > 650 || pos < 300) return; // Security
-
-    uint actual = analogRead(POTE);
-
-    if (actual == pos) return;
-
-    
-    if (actual < pos) {
-        // Tengo que girar en sentido antihorario hasta la posición
-
-        while (actual < pos) {
-            moveCCW(5);
-            actual = analogRead(POTE);
-        }
-
-    } else {
-        // Tengo que girar en sentido horario hasta la posición
-        while (actual > pos) {
-            moveCW(5);
-            actual = analogRead(POTE);
-        }
-    }
-
-    BaseMotorStop();
 }
 
 // --===================== PUBLIC =====================--
@@ -89,7 +67,7 @@ void BaseMotorSetup() {
     pinMode(IN2, OUTPUT); // Set the IN2 pin as OUTPUT
     pinMode(IN3, OUTPUT); // Set the IN3 pin as OUTPUT
     pinMode(IN4, OUTPUT); // Set the IN4 pin as OUTPUT
-
+    pinMode(SW, INPUT_PULLUP);
     BaseMotorStop();
 }
 
@@ -98,7 +76,7 @@ void BaseMotorUpdate() {
     if (direction == STOP) {
         return;
     } else if (direction == TO_CCW) {
-        uint actual = analogRead(POTE);
+        //uint actual = analogRead(POTE);
 
         if (actual >= target) {
             direction = STOP;
@@ -106,7 +84,7 @@ void BaseMotorUpdate() {
             moveCCW(10);
         }
     } else if (direction == TO_CW) {
-        uint actual = analogRead(POTE);
+        //uint actual = analogRead(POTE);
 
         if (actual <= target) {
             direction = STOP;
@@ -118,10 +96,10 @@ void BaseMotorUpdate() {
 }
 
 void BaseMotorSetAngle(float angle) {
-    target = 508.35 + 214.51 * angle;
-    target = constrain(target, MIN_POTE, MAX_POTE);
+    // target = 508.35 + 214.51 * angle;
+    // target = constrain(target, MIN_POTE, MAX_POTE);
 
-    uint actual = analogRead(POTE);
+    target = 1024 + 651.9 * angle;
     if (actual < target)
         direction = TO_CCW;
     else if (actual > target)
@@ -140,8 +118,18 @@ bool BaseMotorFinished() {
 }
 
 void BaseMotorHome() {
-    Serial.println("Base Motor Home");
+    //Serial.println("Base Motor Home");
     BaseMotorStop();
-    target = 505;
+    //target = 505;
     //moveTo(505);
+    target = 0;
+
+    while (digitalRead(SW) == HIGH) {
+        actual = 8;
+        moveCW(5);
+    }
+
+    actual = 0;
+
+    BaseMotorStop();
 }
