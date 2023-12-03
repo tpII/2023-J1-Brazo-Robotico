@@ -40,7 +40,7 @@ bool CameraInit() {
     digitalWrite(LED_GPIO_NUM, HIGH);
 
     if (esp_camera_init(&config) != ESP_OK) {
-        Serial.println("Camera Init failed");
+        //Serial.println("Camera Init failed");
         return false;
     }
 

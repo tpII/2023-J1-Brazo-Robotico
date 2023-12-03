@@ -185,7 +185,7 @@ void RobotSolveFor(double x, double y, double z) {
     }
 
     // Error. Cuando el algoritmo no logra converger
-    Serial.println("El brazo no pudo alcanzar la posicion en " + String(MAX_ITERATIONS));
+    //Serial.println("El brazo no pudo alcanzar la posicion en " + String(MAX_ITERATIONS));
 }
 
 String RobotGetDimensions() {

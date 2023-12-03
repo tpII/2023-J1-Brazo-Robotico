@@ -101,7 +101,7 @@ void handleObjects() {
     // Serialize the JSON document to a string
     String jsonString;
     serializeJson(doc, jsonString);
-    Serial.println(jsonString);
+    // Serial.println(jsonString);
     // Send as response
     server.send(200, "text/json", jsonString);
 }
@@ -135,7 +135,7 @@ void handleCamera() {
     fb = esp_camera_fb_get();
 
     if (!fb) {
-        Serial.println("Error al capturar imagen");
+        // Serial.println("Error al capturar imagen");
         server.send(500);
     } else {
         DetectObjects(fb->buf, fb->len);
@@ -148,14 +148,14 @@ void handleCamera() {
 }
 
 void WiFiSetup() {
-    Serial.print("Configurando Access Point...");
+    // Serial.print("Configurando Access Point...");
 
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(local_ip, gateway, subnet);
     WiFi.softAP(SSID, PASSWORD);
 
-    Serial.println("");
-    Serial.println("WiFi conectado :D");
+    // Serial.println("");
+    // Serial.println("WiFi conectado :D");
 
     // Manejadores de HTTP requests
     server.on("/",     handleRoot);
@@ -195,7 +195,7 @@ void WiFiSetup() {
 
     // Inicia el servidor
     server.begin();
-    Serial.println ( "Servidor HTTP escuchando" );
+    // Serial.println ( "Servidor HTTP escuchando" );
 }
 
 void WiFiUpdate() {

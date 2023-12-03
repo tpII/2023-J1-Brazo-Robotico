@@ -6,14 +6,14 @@
 void setup()
 {
     delay(3000);
-    Serial.begin(115200);
-    Serial.println();
+    // Serial.begin(115200);
+    // Serial.println();
 
-    WiFiSetup();
-    CameraInit();
-    BaseMotorSetup();
+    //WiFiSetup();
+    //CameraInit();
+    //BaseMotorSetup();
     ServosSetup();
-    BaseMotorHome();    
+    //BaseMotorHome();    
 }
 
 void loop()
