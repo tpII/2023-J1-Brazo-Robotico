@@ -3,7 +3,7 @@
 // --===================== PRIVATE =====================--
 
 Servo servoQ2, servoQ3, servoQ4, servoQ5;
-int s_target[] = {850, 1300, 1938, 1250};
+int s_target[] = {1009, 1100, 1938, 1250};
 int s_delay[] = {0, 0, 0, 0};
 int s_delayCount[] = {0, 0, 0, 0};
 int servos_finish = 3;
@@ -73,25 +73,30 @@ void setDelays() {
 
 // --===================== PUBLIC =====================--
 
-void ServosSetup() { 
+void ServosSetup() {
+    ESP32PWM::allocateTimer(1);
+    ESP32PWM::allocateTimer(2);
+
+    servoQ2.setPeriodHertz(50);
+    servoQ3.setPeriodHertz(50);
+
     servoQ2.attach(Q2, 300, 2000); //887
     delay(500);
     servoQ3.attach(Q3, 300, 2000); //1490
     delay(500);
-    servoQ4.attach(Q4, 300, 2000); //1985
-    delay(500);
+    //servoQ4.attach(Q4, 300, 2000, 1938); //1985
+    //delay(500);
     // servoQ5.attach(Q5, 300, 2000, 1150);
     // delay(500);
     ServosHome();
 }
 
 void ServosHome() {
-    servoQ2.writeMicroseconds(850);
-    servoQ3.writeMicroseconds(1300);
-    servoQ4.writeMicroseconds(1938);
-    // moveTo(&servoQ2, 850);
-    // moveTo(&servoQ3, 1100);
-    // moveTo(&servoQ4, 1938);
+    servoQ2.writeMicroseconds(1009);
+    servoQ3.writeMicroseconds(1100);
+    //moveTo(&servoQ2, 1009);
+    //moveTo(&servoQ3, 1100);
+    //moveTo(&servoQ4, 1938);
     //moveTo(&servoQ5, 1150);
 }
 
@@ -117,14 +122,14 @@ void ServosUpdate() {
         servos_finish += updateServo(&servoQ5, s_target[3]);
         s_delayCount[3] = s_delay[3];
     }*/
-    float q2 = (1593.1 - servoQ2.readMicroseconds()) / 716;
+    float q2 = (1756.4 - servoQ2.readMicroseconds()) / 609.9;
     float q3 = (1002.9 - servoQ3.readMicroseconds()) / 411.3;
     float q4 = (1029.9 - servoQ4.readMicroseconds()) / 651.1;
     //servoQ5.writeMicroseconds(constrain(1020.7 - 603.8 * (-PI * .5 - q2 - q3 - q4), 300, 2000));
 }
 
 void ServosSetAngles(float q2, float q3, float q4, float q5) {
-    s_target[0] = constrain(1593.1 - 716 * q2, 300, 2000);
+    s_target[0] = constrain(1756.4 - 609.9 * q2, 300, 2000);
     s_target[1] = constrain(1002.9 - 411.3 * q3, 300, 2000);
     //s_target[2] = constrain(308.73 - 592.40 * q4, 300, 2000);
     s_target[2] = constrain(1029.9 - 651.1 * q4, 300, 2000);
