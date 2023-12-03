@@ -9,11 +9,11 @@ void setup()
     // Serial.begin(115200);
     // Serial.println();
 
-    WiFiSetup();
-    CameraInit();
-    BaseMotorSetup();
-    // ServosSetup();
-    BaseMotorHome();    
+    //WiFiSetup();
+    //CameraInit();
+    //BaseMotorSetup();
+    ServosSetup();
+    //BaseMotorHome();    
 }
 
 void loop()
