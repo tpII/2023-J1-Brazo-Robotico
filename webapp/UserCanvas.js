@@ -200,7 +200,7 @@ const UserCanvas = {
 
     selectObject(x, y) {
         // Ajusta las coordenadas del objeto según la relación del canvas
-        const adjustedX = (x/96)*this.w;
+        const adjustedX = (x/96)*this.h+(this.w-this.h)/2;
         const adjustedY = (y/96)*this.h;
 
         this.selectedObject.x = adjustedX;
