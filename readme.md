@@ -13,5 +13,7 @@ El objetivo principal del proyecto es incorporar la cámara **ESP32-Cam**, reemp
 - [Edge Impulse](https://edgeimpulse.com/)
 - Nodejs
 - C++
+- Express
+- Axios
 
-### 🕰️ [Bitácora](https://github.com/tpII/2023-J2-Data-Glove/wiki/B%C3%ADtacora)
+## 🕰️ [Bitácora](https://github.com/tpII/2023-J2-Data-Glove/wiki/B%C3%ADtacora)
