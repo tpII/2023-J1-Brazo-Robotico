@@ -11,9 +11,9 @@ El objetivo principal del proyecto es incorporar la cámara **ESP32-Cam**, reemp
 ## Tecnologías 💻
 - [PlatformIO](https://platformio.org/)
 - [Edge Impulse](https://edgeimpulse.com/)
-- Nodejs
+- [Node.js](https://nodejs.org/en)
 - C++
 - Express
 - Axios
 
-## 🕰️ [Bitácora](https://github.com/tpII/2023-J2-Data-Glove/wiki/B%C3%ADtacora)
+## 🕰️ [Bitácora](https://github.com/tpII/2023-J1-Brazo-Robotico/wiki/Bit%C3%A1cora)
