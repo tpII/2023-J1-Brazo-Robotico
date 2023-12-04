@@ -3,7 +3,7 @@
 // --===================== PRIVATE =====================--
 
 Servo servoQ2, servoQ3;
-int s_target[] = {1009, 1100};
+int s_target[] = {1341, 1075};
 int s_actual[] = {0, 0};
 int s_delay[] = {0, 0};
 int s_delayCount[] = {0, 0};
@@ -99,9 +99,9 @@ void ServosSetup() {
 }
 
 void ServosHome() {
-    servoQ2.writeMicroseconds(1009);
+    servoQ2.writeMicroseconds(1341);
     s_actual[0] = 1009;
-    servoQ3.writeMicroseconds(1100);
+    servoQ3.writeMicroseconds(1075);
     s_actual[1] = 1100;
     //moveTo(&servoQ2, 1009);
     //moveTo(&servoQ3, 1100);
