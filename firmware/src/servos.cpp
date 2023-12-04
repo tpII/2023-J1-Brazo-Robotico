@@ -4,15 +4,19 @@
 
 Servo servoQ2, servoQ3;
 int s_target[] = {1009, 1100};
+int s_actual[] = {0, 0};
 int s_delay[] = {0, 0};
 int s_delayCount[] = {0, 0};
 int servos_finish = 2;
 
-void moveTo(Servo *servo, int pos) {
+void moveTo(int servoN, int pos) {
     if (pos < 250 || pos > 2000)
         return; // Safety
 
-    int actual = servo->readMicroseconds();
+    Servo *servo = servoN == 2 ? &servoQ2
+                               : &servoQ3;
+
+    int actual = s_actual[servoN - 2];
 
     if (actual == pos)
         return;
@@ -22,6 +26,7 @@ void moveTo(Servo *servo, int pos) {
 
         while (actual < pos) {
             actual += STEP;
+            s_actual[servoN - 2] = actual;
             servo->writeMicroseconds(actual);
             delay(STEP_DELAY);
         }
@@ -29,11 +34,13 @@ void moveTo(Servo *servo, int pos) {
         // Tengo que girar en sentido horario hasta la posición
         while (actual > pos) {
             actual -= STEP;
+            s_actual[servoN - 2] = actual;
             servo->writeMicroseconds(actual);
             delay(STEP_DELAY);
         }
     }
 
+    s_actual[servoN - 2] = pos;
     servo->writeMicroseconds(pos);
 }
 
@@ -41,20 +48,24 @@ void moveTo(Servo *servo, int pos) {
  * Mueve el servo 1us hacia su posición final.
  * Retorna 1 si llegó al objetivo
  */
-int updateServo(Servo *servo, int t) {
-    int actual = servo->readMicroseconds();
+int updateServo(int servoN, int t) {
+    Servo *servo = servoN == 2 ? &servoQ2
+                               : &servoQ3;
+
+    int actual = s_actual[servoN - 2];
 
     if (actual == t)
         return 1;
 
     actual += (actual < t) - (actual > t); // if actual < t actual++ else if actual > t actual--
+    s_actual[servoN - 2] = actual;
     servo->writeMicroseconds(actual);
     return 0;
 }
 
 void setDelays() {
-    float dif2 = abs(s_target[0] - servoQ2.readMicroseconds()),
-          dif3 = abs(s_target[1] - servoQ3.readMicroseconds());
+    float dif2 = abs(s_target[0] - s_actual[0]),
+          dif3 = abs(s_target[1] - s_actual[1]);
 
     float dif = max(dif2, dif3);
 
@@ -79,9 +90,7 @@ void ServosSetup() {
     servoQ3.setPeriodHertz(50);
 
     servoQ2.attach(Q2, 300, 2000); //887
-    delay(500);
     servoQ3.attach(Q3, 300, 2000); //1490
-    delay(500);
     //servoQ4.attach(Q4, 300, 2000, 1938); //1985
     //delay(500);
     // servoQ5.attach(Q5, 300, 2000, 1150);
@@ -91,7 +100,9 @@ void ServosSetup() {
 
 void ServosHome() {
     servoQ2.writeMicroseconds(1009);
+    s_actual[0] = 1009;
     servoQ3.writeMicroseconds(1100);
+    s_actual[1] = 1100;
     //moveTo(&servoQ2, 1009);
     //moveTo(&servoQ3, 1100);
     //moveTo(&servoQ4, 1938);
@@ -105,11 +116,11 @@ void ServosUpdate() {
 
     servos_finish = 0;
     if (s_delayCount[0]-- == 0) {
-        servos_finish += updateServo(&servoQ2, s_target[0]);
+        servos_finish += updateServo(2, s_target[0]);
         s_delayCount[0] = s_delay[0];
     }
     if (s_delayCount[1]-- == 0) {
-        servos_finish += updateServo(&servoQ3, s_target[1]);
+        servos_finish += updateServo(3, s_target[1]);
         s_delayCount[1] = s_delay[1];
     }
     // if (s_delayCount[2]-- == 0) {
@@ -120,8 +131,8 @@ void ServosUpdate() {
         servos_finish += updateServo(&servoQ5, s_target[3]);
         s_delayCount[3] = s_delay[3];
     }*/
-    float q2 = (1756.4 - servoQ2.readMicroseconds()) / 609.9;
-    float q3 = (1002.9 - servoQ3.readMicroseconds()) / 411.3;
+    float q2 = (1756.4 - s_actual[0] / 609.9);
+    float q3 = (1002.9 - s_actual[1] / 411.3);
     // float q4 = (1029.9 - servoQ4.readMicroseconds()) / 651.1;
     //servoQ5.writeMicroseconds(constrain(1020.7 - 603.8 * (-PI * .5 - q2 - q3 - q4), 300, 2000));
 }
@@ -147,6 +158,8 @@ void ServosMove(int servo, int d) {
                           : &servoQ3;
             //  : servo == 4 ? &servoQ4
             //               : &servoQ5;
-    s->writeMicroseconds(s->readMicroseconds() + d);
+
+    s_actual[servo - 2] += d;
+    s->writeMicroseconds(s_actual[servo - 2]);
     //Serial.println("S" + String(servo) + ":" + String(s->readMicroseconds()));
 }
