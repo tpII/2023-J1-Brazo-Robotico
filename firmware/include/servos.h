@@ -1,8 +1,8 @@
 #include "Arduino.h"
 #include <ESP32Servo.h>
 
-#define Q2 14 // Pin S del Servo Q2 conectado al GPIO15 bs(D8)
-#define Q3 15 // Pin S del Servo Q3 conectado al GPIO13 (D7)
+#define Q2 4 // Pin S del Servo Q2 conectado al GPIO15 bs(D8)
+#define Q3 2// Pin S del Servo Q3 conectado al GPIO13 (D7)
 #define Q4 13 // Pin S del Servo Q4 conectado al GPIO12 (D6)
 #define Q5 12 // Pin S del Servo Q5 conectado al GPIO14 (D5)
 

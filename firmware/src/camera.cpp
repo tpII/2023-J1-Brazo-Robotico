@@ -36,8 +36,8 @@ bool CameraInit() {
     pinMode(PWDN_GPIO_NUM, OUTPUT);
     digitalWrite(PWDN_GPIO_NUM, LOW);
 
-    pinMode(LED_GPIO_NUM, OUTPUT);
-    digitalWrite(LED_GPIO_NUM, HIGH);
+    //pinMode(LED_GPIO_NUM, OUTPUT);
+    //digitalWrite(LED_GPIO_NUM, HIGH);
 
     if (esp_camera_init(&config) != ESP_OK) {
         //Serial.println("Camera Init failed");
