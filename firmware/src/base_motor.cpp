@@ -99,7 +99,7 @@ void BaseMotorSetAngle(float angle) {
     // target = 508.35 + 214.51 * angle;
     // target = constrain(target, MIN_POTE, MAX_POTE);
 
-    target = 1024 + 651.9 * angle;
+    target = 1280.1 + 655.7 * angle;
     if (actual < target)
         direction = TO_CCW;
     else if (actual > target)
