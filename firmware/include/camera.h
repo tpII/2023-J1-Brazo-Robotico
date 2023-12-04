@@ -25,5 +25,5 @@
 #define LED_GPIO_NUM       4
 
 bool CameraInit();
-
+bool isCameraInitialised();
 #endif

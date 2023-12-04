@@ -117,5 +117,5 @@ void sprintMatrix(double* mat, int m, int n) {
             str += String(mat[j * n + i], 4) + " ";
         str += "\n";
     }
-    Serial.print(str);
+    //Serial.print(str);
 }
