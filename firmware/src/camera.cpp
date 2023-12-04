@@ -47,3 +47,7 @@ bool CameraInit() {
     is_initialised = true;
     return true;
 }
+
+bool isCameraInitialised() {
+  return is_initialised;
+}

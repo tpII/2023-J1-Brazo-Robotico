@@ -2,6 +2,7 @@
  * @file Este módulo se encarga del manejo de la estación WiFi
 */
 #include "wifi_station.h"
+#include "camera.h"
 #include "robot.h"
 #include "servos.h"
 #include "object_detection.h"
@@ -81,6 +82,11 @@ void loadPoints(String str) {
 
 void handleObjects() {
     std::vector<std::unordered_map<std::string, std::string>> data = GetDetectedObjects();
+
+    if(data.empty()) { 
+      server.send(500);
+      return;
+    } 
     // Calculate the capacity of the JSON document
     size_t capacity = JSON_ARRAY_SIZE(data.size()) + data.size() * JSON_OBJECT_SIZE(data[0].size());
 
@@ -168,6 +174,9 @@ void WiFiSetup() {
     });
 
     // DEBUG
+    server.on("/is_camera_on", [](){
+      server.send(200, "text/plain", String(isCameraInitialised()));
+    });
     server.on("/m2p", []() {
         ServosMove(2, 10);
     });
